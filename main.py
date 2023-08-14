@@ -23,8 +23,8 @@ nprocs = comm.Get_size()
 #     comb = list(itertools.combinations(indexedSeqs, 2))[:10]
 #     return comb
 
-# with open('results.csv', 'w') as f:
-#     f.write('source,target,score\n')
+with open('results.csv', 'w') as f:
+    f.write('source,target,score\n')
 
 def loadData():
     import csv
