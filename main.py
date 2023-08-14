@@ -30,7 +30,7 @@ nprocs = comm.Get_size()
 if rank == 0:
     
     # data = getCombinations(readData()) #list(itertools.combinations([1,2,3,4], 2))
-    data = list(itertools.combinations([i for i in range(1000)], 2))
+    data = list(itertools.combinations([i for i in range(100)], 2))
 
     # determine the size of each sub-task
     ave, res = divmod(len(data), nprocs)
@@ -48,7 +48,7 @@ else:
 data = comm.scatter(data, root=0)
 
 for x, y in data:
-    os.system('echo "{} - {}" > results.csv '.format(x, y))
+    os.system('echo "{} - {}" >> results.csv '.format(x, y))
 
 # for (ix, x), (iy, y) in data:
 #     os.system("python yourCustomScript.py {} {} {} {}".format(ix, x, iy, y))
