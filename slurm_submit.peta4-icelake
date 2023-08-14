@@ -54,8 +54,8 @@ module purge                               # Removes all modules still loaded
 module load rhel8/default-icl              # REQUIRED - loads the basic environment
 
 #! Insert additional module load commands after this line if needed:
-module load python-3.9.6-gcc-5.4.0-sbr552h
-module load openmpi/gcc/9.3/4.0.4 
+# module load python-3.9.6-gcc-5.4.0-sbr552h
+module load python-3.6.2-gcc-5.4.0-me5fsee
 
 module load py-mpi4py-3.0.0-gcc-5.4.0-pvy42hk
 module load py-mpi4py-3.0.0-gcc-5.4.0-ik4dghw
@@ -63,15 +63,18 @@ module load py-mpi4py-2.0.0-intel-17.0.4-mqx6za7
 module load py-mpi4py-2.0.0-intel-17.0.4-glqja4z
 module load py-mpi4py-2.0.0-intel-17.0.4-2t44v2t
 
-module load openmpi
-module load openmpi/4.1.3/intel/iwzoswji
-module load openmpi/4.1.1/gcc/mnop75he
-module load  openmpi-4.0.5-gcc-11.1.0-rkwciv5
-module load openmpi/gcc/9.2/4.0.1
+# module load openmpi
+# module load openmpi/4.1.3/intel/iwzoswji
+# module load openmpi/4.1.1/gcc/mnop75he
+# module load  openmpi-4.0.5-gcc-11.1.0-rkwciv5
+# module load openmpi/gcc/9.2/4.0.1
+module load openmpi/
 # moduel load py-numpy-1.16.2-gcc-5.4.0-cjwdstl # REQUIRED - numpy
 
 #! Full path to application executable: 
 application="/home/jj515/Independent-Parallel-Calculations-Deployment-Cambridge-Cluster/MY_PYTHON/bin/python /home/jj515/Independent-Parallel-Calculations-Deployment-Cambridge-Cluster/main.py"
+
+application="python /home/jj515/Independent-Parallel-Calculations-Deployment-Cambridge-Cluster/main.py"
 
 #! Run options for the application:
 options=""
@@ -111,8 +114,8 @@ ACTIVATEVENV="source /home/jj515/Independent-Parallel-Calculations-Deployment-Ca
 # CMD="$application $options"
 
 #! Choose this for a MPI code (possibly using OpenMP) using OpenMPI:
-CMD="mpirun -npernode $mpi_tasks_per_node -np $np $application $options"
-
+# CMD="mpirun -npernode $mpi_tasks_per_node -np $np $application $options"
+CMD="srun --time 0:05:00 --ntasks 10 --cpus-per-task 1 --mem-per-cpu 512M --nodes 2-10 python3 main.py"
 
 ###############################################################
 ### You should not have to change anything below this line ####
