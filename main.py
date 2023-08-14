@@ -1,5 +1,5 @@
 from mpi4py import MPI
-import numpy as np
+import itertools
 import os
 
 comm = MPI.COMM_WORLD
@@ -11,25 +11,26 @@ nprocs = comm.Get_size()
 # DATA ARRAY MUST BE LOADED AND PARTITIONED BEFORE STARTING CALCULAITONS
 # IN PRACTICE IT WILL WORK FOR 'FOR' LOOP WITHOUT INTERNAL CONDITIONS
 
-def readData():
-    import pandas as pd
-    df = pd.read_csv("HM.csv")
-    seqs = df["3AA"].map(lambda x: x.replace("(", "")).map(lambda x: x.replace(")", ""))
-    return seqs
+# def readData():
+#     import pandas as pd
+#     df = pd.read_csv("HM.csv")
+#     seqs = df["3AA"].map(lambda x: x.replace("(", "")).map(lambda x: x.replace(")", ""))
+#     return seqs
 
-def getCombinations(data):
-    import itertools
-    indexedSeqs = [(i, data[i]) for i in range(len(data))]
-    comb = list(itertools.combinations(indexedSeqs, 2))[:10]
-    return comb
+# def getCombinations(data):
+#     import itertools
+#     indexedSeqs = [(i, data[i]) for i in range(len(data))]
+#     comb = list(itertools.combinations(indexedSeqs, 2))[:10]
+#     return comb
 
-with open('results.csv', 'w') as f:
-    f.write('source,target,score\n')
+# with open('results.csv', 'w') as f:
+#     f.write('source,target,score\n')
 
 #########################################################################
 if rank == 0:
     
-    data = getCombinations(readData()) #list(itertools.combinations([1,2,3,4], 2))
+    # data = getCombinations(readData()) #list(itertools.combinations([1,2,3,4], 2))
+    data = list(itertools.combinations([i for i in range(1000)], 2))
 
     # determine the size of each sub-task
     ave, res = divmod(len(data), nprocs)
@@ -46,6 +47,9 @@ else:
 
 data = comm.scatter(data, root=0)
 
-for (ix, x), (iy, y) in data:
-    os.system("python yourCustomScript.py {} {} {} {}".format(ix, x, iy, y))
-    # print('Process {} {} has data:'.format(rank), x, y)
+for x, y in data:
+    os.system('echo "{} - {}" > results.csv '.format(x, y))
+
+# for (ix, x), (iy, y) in data:
+#     os.system("python yourCustomScript.py {} {} {} {}".format(ix, x, iy, y))
+#     # print('Process {} {} has data:'.format(rank), x, y)
