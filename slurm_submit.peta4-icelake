@@ -121,8 +121,11 @@ export I_MPI_PIN_ORDER=scatter # Adjacent domains have minimal sharing of caches
 # CMD="$application $options"
 
 #! Choose this for a MPI code (possibly using OpenMP) using OpenMPI:
-CMD="mpirun -npernode $mpi_tasks_per_node -np $np $application $options"
+CMD="mpirun -np $np $application $options"
+# CMD="mpirun -npernode $mpi_tasks_per_node -np $np $application $options"
+
 # CMD="srun --time 0:05:00 --ntasks 10 --cpus-per-task 1 --mem-per-cpu 512M --nodes 2-10 python3 main.py"
+
 
 ###############################################################
 ### You should not have to change anything below this line ####
