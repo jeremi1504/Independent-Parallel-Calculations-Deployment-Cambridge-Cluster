@@ -54,7 +54,7 @@ module purge                               # Removes all modules still loaded
 module load rhel8/default-icl              # REQUIRED - loads the basic environment
 
 #! Insert additional module load commands after this line if needed:
-module load python-3.9.6-gcc-5.4.0-sbr552h # REQUIRED - loads python
+module load python-3.9.6-gcc-5.4.0-sbr552h
 module load openmpi/gcc/9.3/4.0.4 
 
 module load py-mpi4py-3.0.0-gcc-5.4.0-pvy42hk

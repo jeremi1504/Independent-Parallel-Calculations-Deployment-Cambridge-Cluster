@@ -26,11 +26,21 @@ nprocs = comm.Get_size()
 # with open('results.csv', 'w') as f:
 #     f.write('source,target,score\n')
 
+def loadData():
+    import csv
+    res = []
+    with open('inputData.csv', newline='') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        for row in spamreader:
+            tmp = row[0].split(",")
+            res.append((int(tmp[0]), tmp[1]))
+    return res[:10]
+
 #########################################################################
 if rank == 0:
     
     # data = getCombinations(readData()) #list(itertools.combinations([1,2,3,4], 2))
-    data = list(itertools.combinations([i for i in range(100)], 2))
+    data = list(itertools.combinations(loadData(), 2))
 
     # determine the size of each sub-task
     ave, res = divmod(len(data), nprocs)
@@ -47,9 +57,9 @@ else:
 
 data = comm.scatter(data, root=0)
 
-for x, y in data:
-    os.system('echo "{} - {}" >> results.csv '.format(x, y))
+# for x, y in data:
+#     os.system('echo "{} - {}" >> results.csv '.format(x, y))
 
-# for (ix, x), (iy, y) in data:
-#     os.system("python yourCustomScript.py {} {} {} {}".format(ix, x, iy, y))
-#     # print('Process {} {} has data:'.format(rank), x, y)
+for (ix, x), (iy, y) in data:
+    os.system("python yourCustomScript.py {} {} {} {}".format(ix, x, iy, y))
+    
