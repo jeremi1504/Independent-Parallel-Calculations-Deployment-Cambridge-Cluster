@@ -104,7 +104,7 @@ export I_MPI_PIN_ORDER=scatter # Adjacent domains have minimal sharing of caches
 # CMD="mpirun -ppn $mpi_tasks_per_node -np $np $application $options"
 # CMD="mpirun -np $np $application $options"
 # CMD="srun -n $np $application $options"
-ACTIVATEVENV="source /home/jj515/Independent-Parallel-Calculations-Deployment-Cambridge-Cluster/bin/activate"
+ACTIVATEVENV="source /home/jj515/Independent-Parallel-Calculations-Deployment-Cambridge-Cluster/MY_PYTHON/bin/activate"
 # srun --ntasks 10 --cpus-per-task 1 --nodes ${numnodes} python3 main.py
 #! Choose this for a pure shared-memory OpenMP parallel program on a single node:
 #! (OMP_NUM_THREADS threads will be created):
