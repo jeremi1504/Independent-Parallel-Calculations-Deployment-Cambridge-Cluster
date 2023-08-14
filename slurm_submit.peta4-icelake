@@ -62,6 +62,9 @@ module load py-mpi4py-3.0.0-gcc-5.4.0-ik4dghw
 module load py-mpi4py-2.0.0-intel-17.0.4-mqx6za7
 module load py-mpi4py-2.0.0-intel-17.0.4-glqja4z
 module load py-mpi4py-2.0.0-intel-17.0.4-2t44v2t
+
+module load openmpi
+
 # moduel load py-numpy-1.16.2-gcc-5.4.0-cjwdstl # REQUIRED - numpy
 
 #! Full path to application executable: 
