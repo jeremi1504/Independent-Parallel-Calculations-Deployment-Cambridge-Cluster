@@ -71,7 +71,7 @@ module load openmpi/gcc/9.2/4.0.1
 # moduel load py-numpy-1.16.2-gcc-5.4.0-cjwdstl # REQUIRED - numpy
 
 #! Full path to application executable: 
-application="python3 /home/jj515/Independent-Parallel-Calculations-Deployment-Cambridge-Cluster/main.py"
+application="/home/jj515/Independent-Parallel-Calculations-Deployment-Cambridge-Cluster/MY_PYTHON/bin/python /home/jj515/Independent-Parallel-Calculations-Deployment-Cambridge-Cluster/main.py"
 
 #! Run options for the application:
 options=""
@@ -140,5 +140,5 @@ echo -e "\nnumtasks=$numtasks, numnodes=$numnodes, mpi_tasks_per_node=$mpi_tasks
 
 echo -e "\nExecuting command:\n==================\n$CMD\n"
 
-eval $ACTIVATEVENV
+# eval $ACTIVATEVENV
 eval $CMD 
