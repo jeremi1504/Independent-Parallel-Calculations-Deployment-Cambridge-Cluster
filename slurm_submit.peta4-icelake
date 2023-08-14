@@ -56,6 +56,8 @@ module load rhel8/default-icl              # REQUIRED - loads the basic environm
 #! Insert additional module load commands after this line if needed:
 module load python-3.9.6-gcc-5.4.0-sbr552h # REQUIRED - loads python
 module load py-mpi4py-3.0.0-gcc-5.4.0-pvy42hk  # REQUIRED - mpi4py
+moduel load py-numpy-1.16.2-gcc-5.4.0-cjwdstl # REQUIRED - numpy
+
 #! Full path to application executable: 
 application="/home/jj515/Independent-Parallel-Calculations-Deployment-Cambridge-Cluster/main.py"
 
@@ -87,7 +89,7 @@ export I_MPI_PIN_ORDER=scatter # Adjacent domains have minimal sharing of caches
 #! Uncomment one choice for CMD below (add mpirun/mpiexec options if necessary):
 
 #! Choose this for a MPI code (possibly using OpenMP) using Intel MPI.
-CMD="mpirun -ppn $mpi_tasks_per_node -np $np python3 $application $options"
+CMD="mpirun -ppn $mpi_tasks_per_node -np $np --mpi=openmpi python3 $application $options"
 
 #! Choose this for a pure shared-memory OpenMP parallel program on a single node:
 #! (OMP_NUM_THREADS threads will be created):
