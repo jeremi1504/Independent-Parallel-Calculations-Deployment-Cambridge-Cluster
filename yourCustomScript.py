@@ -1,19 +1,26 @@
-import sys
-import numpy as np
-import Bio.Align.substitution_matrices as substitution_matrices
+# import sys
+# import numpy as np
+# import Bio.Align.substitution_matrices as substitution_matrices
+# import csv
 
+from python import numpy as np
+from python import Bio.Align.substitution_matrices as substitution_matrices
+from python import typing as typing
+from typing import Dict, List, Union
+from sys import argv
 blosum62 = substitution_matrices.load("BLOSUM62")
 
+    
 # Define a function for scoring triplets
 def triplet_score(triplet1, triplet2):
     return blosum62[triplet1[0]][triplet2[0]] + blosum62[triplet1[1]][triplet2[1]] + blosum62[triplet1[2]][triplet2[2]]
 
 # Define a function for scoring entire sequences
-def sequence_compare():
-    index1 = sys.argv[1]
-    index2 = sys.argv[3]
-    seq1 = sys.argv[2]
-    seq2 = sys.argv[4]
+def sequence_compare(outputPath, index1, seq1, index2, seq2):
+    # index1 = sys.argv[1]
+    # index2 = sys.argv[3]
+    # seq1 = sys.argv[2]
+    # seq2 = sys.argv[4]
     # define penalties
     gappenalty = 12        # gap penalty for a 3-letter gap within the sequence 
     endpenalty = 3         # gap penalty for a 3-letter gap at the ends of the sequence
@@ -99,10 +106,45 @@ def sequence_compare():
     else:
         total_alignment_score = end_gap_2_max
     
-    with open('results.csv', 'a') as f:
-        f.write('\n{},{},{}\n'.format(index1, index2, total_alignment_score))
+    with open(outputPath, 'a') as f:
+        f.write(str(index1)+","+str(index2)+","+str(total_alignment_score)+"\n")
 
     return total_alignment_score
 
-if __name__=='__main__':
-    sequence_compare()
+@python
+def readInputData(filepath):
+    import csv
+    array_of_dicts = []
+
+    with open(filepath, 'r') as file:
+        reader = csv.DictReader(file)
+        for row in reader:
+            array_of_dicts.append({
+                'source_index': int(row['source_index']),
+                'source': row['source'],
+                'target_index': int(row['target_index']),
+                'target': row['target'],
+            })
+
+    return array_of_dicts
+
+@python
+def getOutputPath(filepath):
+    return filepath.replace("input", "output")
+
+@python
+def buildOutputDir(outputPath):
+    with open(outputPath, 'w') as f:
+        f.write('source_index,source,target_index,target\n')
+        
+def executeInParallel(outputPath, inputArray):
+     for config in inputArray:
+        sequence_compare(outputPath, config["source_index"], config["source"], config["target_index"], config["target"])
+
+# if __name__ == '__main__':
+inputPath =  argv[1]
+outputPath = getOutputPath(inputPath)
+buildOutputDir(outputPath)
+inputArray = readInputData(inputPath)
+for config in inputArray:
+    sequence_compare(outputPath, config["source_index"], config["source"], config["target_index"], config["target"])
