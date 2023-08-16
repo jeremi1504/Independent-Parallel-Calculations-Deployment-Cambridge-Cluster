@@ -32,7 +32,7 @@ def loadData():
         for row in spamreader:
             tmp = row[0].split(",")
             res.append((int(tmp[0]), tmp[1]))
-    return res
+    return res[:10]
 
 with open('results.csv', 'w') as f:
     f.write('source,target,score\n')
@@ -61,17 +61,13 @@ else:
 
 data = comm.scatter(data, root=0)
 
-# for x, y in data:
-#     os.system('echo "{} - {}" >> results.csv '.format(x, y))
-
-print("-----")
-print(rank)
+print(f"rank: {rank}, numprocess: {nprocs}")
 file_path = os.path.join(dir_name, f"input_{rank}.csv")
 with open(file_path, 'w') as f:
     f.write('source_index,source,target_index,target\n')
+
 with open(file_path, 'a') as f:
     for (ix, x), (iy, y) in data:
         f.write(f'{ix},{x},{iy},{y}\n')
 
-for (ix, x), (iy, y) in data:
-    os.system("./yourCustomScript {} ".format(file_path))
+os.system("python yourCustomScript.py {} ".format(file_path))

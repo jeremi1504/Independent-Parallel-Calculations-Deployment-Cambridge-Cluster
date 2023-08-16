@@ -3,11 +3,12 @@
 # import Bio.Align.substitution_matrices as substitution_matrices
 # import csv
 
-from python import numpy as np
-from python import Bio.Align.substitution_matrices as substitution_matrices
-from python import typing as typing
+import numpy as np
+import Bio.Align.substitution_matrices as substitution_matrices
+import typing as typing
 from typing import Dict, List, Union
 from sys import argv
+import os
 blosum62 = substitution_matrices.load("BLOSUM62")
 
     
@@ -16,7 +17,8 @@ def triplet_score(triplet1, triplet2):
     return blosum62[triplet1[0]][triplet2[0]] + blosum62[triplet1[1]][triplet2[1]] + blosum62[triplet1[2]][triplet2[2]]
 
 # Define a function for scoring entire sequences
-def sequence_compare(outputPath, index1, seq1, index2, seq2):
+def sequence_compare(config):
+    outputPath, index1, seq1, index2, seq2 = config["output_path"], config["source_index"], config["source"], config["target_index"], config["target"]
     # index1 = sys.argv[1]
     # index2 = sys.argv[3]
     # seq1 = sys.argv[2]
@@ -105,21 +107,21 @@ def sequence_compare(outputPath, index1, seq1, index2, seq2):
         total_alignment_score = end_gap_1_max
     else:
         total_alignment_score = end_gap_2_max
-    
     with open(outputPath, 'a') as f:
         f.write(str(index1)+","+str(index2)+","+str(total_alignment_score)+"\n")
 
     return total_alignment_score
 
-@python
 def readInputData(filepath):
     import csv
     array_of_dicts = []
+    outputPath = getOutputPath(inputPath)
 
     with open(filepath, 'r') as file:
         reader = csv.DictReader(file)
         for row in reader:
             array_of_dicts.append({
+                'output_path': outputPath,
                 'source_index': int(row['source_index']),
                 'source': row['source'],
                 'target_index': int(row['target_index']),
@@ -128,11 +130,9 @@ def readInputData(filepath):
 
     return array_of_dicts
 
-@python
 def getOutputPath(filepath):
     return filepath.replace("input", "output")
 
-@python
 def buildOutputDir(outputPath):
     with open(outputPath, 'w') as f:
         f.write('source_index,source,target_index,target\n')
@@ -146,5 +146,13 @@ inputPath =  argv[1]
 outputPath = getOutputPath(inputPath)
 buildOutputDir(outputPath)
 inputArray = readInputData(inputPath)
-for config in inputArray:
-    sequence_compare(outputPath, config["source_index"], config["source"], config["target_index"], config["target"])
+# for config in inputArray:
+#     sequence_compare(config["output_path"], config["source_index"], config["source"], config["target_index"], config["target"])
+
+from multiprocessing import Pool
+
+# Assuming the SLURM_CPUS_PER_TASK environment variable is set
+num_cores = int(os.environ.get("SLURM_CPUS_PER_TASK", os.cpu_count()))
+with Pool(processes=num_cores) as pool:
+    results = pool.map(sequence_compare, inputArray)
+    print(results)
