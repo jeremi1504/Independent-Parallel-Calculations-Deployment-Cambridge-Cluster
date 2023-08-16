@@ -99,9 +99,8 @@ def sequence_compare():
     else:
         total_alignment_score = end_gap_2_max
     
-
     with open('results.csv', 'a') as f:
-        f.write('{},{},{}\n'.format(index1, index2, total_alignment_score))
+        f.write('\n{},{},{}\n'.format(index1, index2, total_alignment_score))
 
     return total_alignment_score
 
