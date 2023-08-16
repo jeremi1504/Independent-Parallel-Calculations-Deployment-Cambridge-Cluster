@@ -56,8 +56,9 @@ module load rhel8/default-icl              # REQUIRED - loads the basic environm
 
 module load miniconda/3
 conda init
-source .bashrc
+source /home/jj515/.bashrc
 conda create -n mpi4pyenv mpi4py biopython numpy
+source /home/jj515/.bashrc
 conda activate mpi4pyenv
 
 #! Insert additional module load commands after this line if needed:
