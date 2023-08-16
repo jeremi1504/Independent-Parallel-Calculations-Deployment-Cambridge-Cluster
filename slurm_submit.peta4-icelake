@@ -21,7 +21,7 @@
 #! 3380 MiB of memory per CPU.
 #SBATCH --ntasks=76
 #! How much wallclock time will be required?
-#SBATCH --time=00:02:00
+#SBATCH --time=00:01:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=NONE
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -49,18 +49,24 @@ mpi_tasks_per_node=$(echo "$SLURM_TASKS_PER_NODE" | sed -e  's/^\([0-9][0-9]*\).
 
 #! Optionally modify the environment seen by the application
 #! (note that SLURM reproduces the environment at submission irrespective of ~/.bashrc):
+source .bashrc
 . /etc/profile.d/modules.sh                # Leave this line (enables the module command)
 module purge                               # Removes all modules still loaded
 module load rhel8/default-icl              # REQUIRED - loads the basic environment
+
+module load miniconda/3
+
+conda create -n mpi4pyenv mpi4py
+conda activate mpi4pyenv
 
 #! Insert additional module load commands after this line if needed:
 # module load python-3.9.6-gcc-5.4.0-sbr552h
 # module load python-3.6.2-gcc-5.4.0-me5fsee
 # module load gcc-7.2.0-gcc-4.8.5-pqn7o2k
-pip install mpi4py
-module load python-3.6.2-gcc-5.4.0-me5fsee
-module load openmpi-3.1.3-gcc-5.4.0-wazc74o
-module load py-mpi4py-2.0.0-intel-17.0.4-mqx6za7
+# pip install mpi4py
+# module load python-3.6.2-gcc-5.4.0-me5fsee
+# module load openmpi-3.1.3-gcc-5.4.0-wazc74o
+# module load py-mpi4py-2.0.0-intel-17.0.4-mqx6za7
 
 # module load py-mpi4py-3.0.0-gcc-5.4.0-pvy42hk
 # module load py-mpi4py-3.0.0-gcc-5.4.0-ik4dghw
