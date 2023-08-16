@@ -153,6 +153,6 @@ from multiprocessing import Pool
 
 # Assuming the SLURM_CPUS_PER_TASK environment variable is set
 num_cores = int(os.environ.get("SLURM_CPUS_PER_TASK", os.cpu_count()))
+print(f"Num cores: {num_cores}")
 with Pool(processes=num_cores) as pool:
     results = pool.map(sequence_compare, inputArray)
-    print(results)
