@@ -6,14 +6,15 @@ from datetime import datetime
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
 nprocs = comm.Get_size()
-
+timestamp = "default"
 #########################################################################
 # HELPER FUNCTION FOR DATA LOADINT INTO THE SYSTEM
 # DATA ARRAY MUST BE LOADED AND PARTITIONED BEFORE STARTING CALCULAITONS
 # IN PRACTICE IT WILL WORK FOR 'FOR' LOOP WITHOUT INTERNAL CONDITIONS
 
 def create_result_directory(name):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    if timestamp != "default":
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     directory_name = f"{name}_{timestamp}"
 
     # Check if directory already exists
