@@ -34,7 +34,7 @@ def loadData():
         for row in spamreader:
             tmp = row[0].split(",")
             res.append((int(tmp[0]), tmp[1]))
-    return res
+    return res[:20]
 
 #########################################################################
 if rank == 0:
