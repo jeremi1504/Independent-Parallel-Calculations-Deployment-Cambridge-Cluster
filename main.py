@@ -12,8 +12,8 @@ nprocs = comm.Get_size()
 # IN PRACTICE IT WILL WORK FOR 'FOR' LOOP WITHOUT INTERNAL CONDITIONS
 
 def create_result_directory(name):
-    timestamp = "remember_to_copy"
-    # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    # timestamp = "remember_to_copy"
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M")
     directory_name = f"{name}_{timestamp}"
 
     # Check if directory already exists
