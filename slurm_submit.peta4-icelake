@@ -49,7 +49,6 @@ mpi_tasks_per_node=$(echo "$SLURM_TASKS_PER_NODE" | sed -e  's/^\([0-9][0-9]*\).
 
 #! Optionally modify the environment seen by the application
 #! (note that SLURM reproduces the environment at submission irrespective of ~/.bashrc):
-# source .bashrc
 . /etc/profile.d/modules.sh                # Leave this line (enables the module command)
 module purge                               # Removes all modules still loaded
 module load rhel8/default-icl              # REQUIRED - loads the basic environment
@@ -57,8 +56,8 @@ module load rhel8/default-icl              # REQUIRED - loads the basic environm
 module load miniconda/3
 conda init
 source /home/jj515/.bashrc
-conda create -n mpi4pyenv mpi4py biopython numpy
-source /home/jj515/.bashrc
+# conda create -n mpi4pyenv mpi4py biopython numpy
+# source /home/jj515/.bashrc
 conda activate mpi4pyenv
 
 #! Insert additional module load commands after this line if needed:
