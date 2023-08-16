@@ -15,13 +15,13 @@
 #SBATCH -A IMBEAULT-SL3-CPU
 #SBATCH -p icelake
 #! How many whole nodes should be allocated?
-#SBATCH --nodes=2
+#SBATCH --nodes=4
 #! How many (MPI) tasks will there be in total? (<= nodes*76)
 #! The Ice Lake (icelake) nodes have 76 CPUs (cores) each and
 #! 3380 MiB of memory per CPU.
 #SBATCH --ntasks=76
 #! How much wallclock time will be required?
-#SBATCH --time=02:00:00
+#SBATCH --time=00:20:00
 #! What types of email messages do you wish to receive?
 #SBATCH --mail-type=NONE
 #! Uncomment this to prevent the job from being requeued (e.g. if
@@ -89,7 +89,7 @@ export I_MPI_PIN_ORDER=scatter # Adjacent domains have minimal sharing of caches
 #! Uncomment one choice for CMD below (add mpirun/mpiexec options if necessary):
 
 #! Choose this for a MPI code (possibly using OpenMP) using Intel MPI.
-# CMD="mpirun -ppn $mpi_tasks_per_node -np $np $application $options"
+CMD="mpirun -ppn $mpi_tasks_per_node -np $np $application $options"
 # CMD="mpirun -np $np $application $options"
 # CMD="srun -n $np $application $options"
 # ACTIVATEVENV="source /home/jj515/Independent-Parallel-Calculations-Deployment-Cambridge-Cluster/MY_PYTHON/bin/activate"
@@ -100,10 +100,7 @@ export I_MPI_PIN_ORDER=scatter # Adjacent domains have minimal sharing of caches
 # CMD="$application $options"
 
 #! Choose this for a MPI code (possibly using OpenMP) using OpenMPI:
-CMD="mpirun -np $np $application $options"
 # CMD="mpirun -npernode $mpi_tasks_per_node -np $np $application $options"
-
-# CMD="srun --time 0:05:00 --ntasks 10 --cpus-per-task 1 --mem-per-cpu 512M --nodes 2-10 python3 main.py"
 
 
 ###############################################################
