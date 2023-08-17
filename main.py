@@ -70,4 +70,4 @@ with open(file_path, 'a') as f:
     for (ix, x), (iy, y) in data:
         f.write(f'{ix},{x},{iy},{y}\n')
 
-os.system("./yourCustomScript {} ".format(file_path))
+os.system("python yourCustomScript.py {} ".format(file_path))
