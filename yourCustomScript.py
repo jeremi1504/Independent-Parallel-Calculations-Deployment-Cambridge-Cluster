@@ -108,10 +108,13 @@ def sequence_compare(config):
         total_alignment_score = end_gap_1_max
     else:
         total_alignment_score = end_gap_2_max
+    
+    adjusted_score = total_alignment_score/max(len_seq1list, len_seq2list)
+    
     with open(outputPath, 'a') as f:
-        f.write(str(index1)+","+str(index2)+","+str(total_alignment_score)+"\n")
+        f.write(str(index1)+","+str(index2)+","+str(total_alignment_score)+","+str(adjusted_score)+"\n")
 
-    return total_alignment_score
+    return total_alignment_score, adjusted_score
 
 def readInputData(filepath):
     import csv
