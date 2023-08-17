@@ -160,4 +160,3 @@ print(f"Num cores: {num_cores}")
 
 with Pool(processes=num_cores) as pool:
     results = pool.map(sequence_compare, inputArray)
-    print(results)
