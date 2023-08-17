@@ -149,7 +149,7 @@ inputArray = readInputData(inputPath)
 num_cores = int(os.environ.get("SLURM_CPUS_PER_TASK", os.cpu_count()))
 print(f"Num cores: {num_cores}")
 for config in inputArray:
-    sequence_compare(config["output_path"], config["source_index"], config["source"], config["target_index"], config["target"])
+    sequence_compare(config)
 
 # from multiprocessing import Pool
 
