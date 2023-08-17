@@ -9,7 +9,6 @@ import typing as typing
 from typing import Dict, List, Union
 from sys import argv
 import os
-from multiprocessing import Pool
 
 blosum62 = substitution_matrices.load("BLOSUM62")
 
@@ -149,14 +148,15 @@ outputPath = getOutputPath(inputPath)
 buildOutputDir(outputPath)
 inputArray = readInputData(inputPath)
 
-# for config in inputArray:
-#     sequence_compare(config)
+for config in inputArray:
+    sequence_compare(config)
 
+# from multiprocessing import Pool
 # Assuming the SLURM_CPUS_PER_TASK environment variable is set
-num_cores = int(os.environ.get("SLURM_CPUS_PER_TASK", os.cpu_count()))
-print(f"Num cores: {num_cores}")
+# num_cores = int(os.environ.get("SLURM_CPUS_PER_TASK", os.cpu_count()))
+# print(f"Num cores: {num_cores}")
 
-# # executeInParallel(inputArray)
+# # # executeInParallel(inputArray)
 
-with Pool(processes=num_cores) as pool:
-    results = pool.map(sequence_compare, inputArray)
+# with Pool(processes=num_cores) as pool:
+#     results = pool.map(sequence_compare, inputArray)
