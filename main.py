@@ -32,7 +32,7 @@ def loadData():
         for row in spamreader:
             tmp = row[0].split(",")
             res.append((int(tmp[0]), tmp[1]))
-    return res
+    return res[:100]
 
 with open('results.csv', 'w') as f:
     f.write('source,target,score\n')
