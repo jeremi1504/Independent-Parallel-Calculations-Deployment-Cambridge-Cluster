@@ -137,22 +137,25 @@ def buildOutputDir(outputPath):
     with open(outputPath, 'w') as f:
         f.write('source_index,source,target_index,target\n')
         
-def executeInParallel(outputPath, inputArray):
+def executeInParallel(inputArray):
      for config in inputArray:
-        sequence_compare(outputPath, config["source_index"], config["source"], config["target_index"], config["target"])
+        sequence_compare(config)
 
 # if __name__ == '__main__':
 inputPath =  argv[1]
 outputPath = getOutputPath(inputPath)
 buildOutputDir(outputPath)
 inputArray = readInputData(inputPath)
-# for config in inputArray:
-#     sequence_compare(config["output_path"], config["source_index"], config["source"], config["target_index"], config["target"])
-
-from multiprocessing import Pool
-
-# Assuming the SLURM_CPUS_PER_TASK environment variable is set
 num_cores = int(os.environ.get("SLURM_CPUS_PER_TASK", os.cpu_count()))
 print(f"Num cores: {num_cores}")
-with Pool(processes=num_cores) as pool:
-    results = pool.map(sequence_compare, inputArray)
+for config in inputArray:
+    sequence_compare(config["output_path"], config["source_index"], config["source"], config["target_index"], config["target"])
+
+# from multiprocessing import Pool
+
+# Assuming the SLURM_CPUS_PER_TASK environment variable is set
+
+# executeInParallel(inputArray)
+
+# with Pool(processes=num_cores) as pool:
+#     results = pool.map(sequence_compare, inputArray)
