@@ -16,12 +16,12 @@ def create_result_directory(name):
     timestamp = datetime.now().strftime("%Y%m%d_%H%M")
     directory_name = f"{name}_{timestamp}"
 
-    # Check if directory already exists
-    if not os.path.exists(directory_name):
+    try:
         os.makedirs(directory_name)
         print(f"Directory {directory_name} created successfully!")
-    else:
+    except:
         print(f"Directory {directory_name} already exists.")
+        
     return directory_name
 
 def loadData():
