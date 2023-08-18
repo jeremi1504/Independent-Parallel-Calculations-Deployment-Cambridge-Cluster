@@ -141,6 +141,27 @@ def compare_sequences(outputPath, sequences_df):
         longer_length = max(len(seq1_conv), len(seq2_conv))
         adjusted_score = raw_score / (longer_length/3)
 
-        if adjusted_score > 5:
+        if adjusted_score > 0:
             with open(outputPath, 'a') as f:
                 f.write(str(source_index)+","+str(target_index)+","+str(raw_score)+","+str(adjusted_score)+"\n")
+            
+        
+def compare_sequence(config):
+    blosum62 = np.asarray(substitution_matrices.load("BLOSUM62"))
+    blosum_alpha = substitution_matrices.load("BLOSUM62").alphabet
+
+    def convert_sequence(seq):
+        seq_conv = np.zeros(len(seq), dtype=np.int32)
+        for i in range(len(seq)):
+            seq_conv[i] = blosum_alpha.index(seq[i])
+        return seq_conv
+
+    source_index, source_seq, target_index, target_seq = config["source_index"], config["source"], config["target_index"], config["target"]
+
+    seq1_conv = convert_sequence(source_seq.replace("-", ""))
+    seq2_conv = convert_sequence(target_seq.replace("-", ""))
+    
+    raw_score = sequence_compare_cython(seq1_conv, seq2_conv, blosum62)
+    longer_length = max(len(seq1_conv), len(seq2_conv))
+    adjusted_score = raw_score / (longer_length/3)
+    return raw_score, adjusted_score

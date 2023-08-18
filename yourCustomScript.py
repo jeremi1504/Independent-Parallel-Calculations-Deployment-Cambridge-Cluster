@@ -9,6 +9,7 @@ import typing as typing
 from typing import Dict, List, Union
 from sys import argv
 import os
+import PW_cython
 
 blosum62 = substitution_matrices.load("BLOSUM62")
 
@@ -141,9 +142,7 @@ def buildOutputDir(outputPath):
     with open(outputPath, 'w') as f:
         f.write('Source,Target,Score,Weight\n')
         
-def executeInParallel(inputArray):
-     for config in inputArray:
-        sequence_compare(config)
+
 
 # if __name__ == '__main__':
 inputPath =  argv[1]
@@ -152,7 +151,10 @@ buildOutputDir(outputPath)
 inputArray = readInputData(inputPath)
 
 for config in inputArray:
-    sequence_compare(config)
+    raws, adjs = PW_cython.compare_sequence(config)
+    if adjs > 5:
+        with open(outputPath, 'a') as f:
+            f.write(str(config["source_index"])+","+str(config["target_index"])+","+str(raws)+","+str(adjs)+"\n")
 
 # from multiprocessing import Pool
 # Assuming the SLURM_CPUS_PER_TASK environment variable is set
