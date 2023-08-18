@@ -139,7 +139,7 @@ def getOutputPath(filepath):
 
 def buildOutputDir(outputPath):
     with open(outputPath, 'w') as f:
-        f.write('source_index,source,target_index,target\n')
+        f.write('Source,Target,Score,Weight\n')
         
 def executeInParallel(inputArray):
      for config in inputArray:
