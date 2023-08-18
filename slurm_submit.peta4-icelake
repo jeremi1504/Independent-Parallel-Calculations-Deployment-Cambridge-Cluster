@@ -58,6 +58,7 @@ conda init
 source /home/jj515/.bashrc
 conda activate /home/jj515/miniconda3/envs/yourenv
 conda install -c anaconda cython
+pip install cython
 python setup.py build_ext --inplace
 
 #! Full path to application executable: 
