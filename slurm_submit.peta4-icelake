@@ -57,6 +57,7 @@ module load miniconda/3
 conda init
 source /home/jj515/.bashrc
 conda activate /home/jj515/miniconda3/envs/yourenv
+python setup.py build_ext --inplace
 
 #! Full path to application executable: 
 application="python /home/jj515/Independent-Parallel-Calculations-Deployment-Cambridge-Cluster/main.py"
