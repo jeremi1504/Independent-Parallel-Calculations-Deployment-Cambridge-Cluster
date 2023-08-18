@@ -131,7 +131,9 @@ def compare_sequences(outputPath, sequences_df):
             seq_conv[i] = blosum_alpha.index(seq[i])
         return seq_conv
 
-    for (source_index, source_seq), (target_index, target_seq) in list(itertools.combinations(sequences_df, 2))[:10000]:
+    for config in sequences_df:
+        source_index, source_seq, target_index, target_seq = config["source_index"], config["source"], config["target_index"], config["target"]
+
         seq1_conv = convert_sequence(source_seq.replace("-", ""))
         seq2_conv = convert_sequence(target_seq.replace("-", ""))
         

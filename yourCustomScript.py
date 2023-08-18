@@ -119,7 +119,7 @@ def sequence_compare(config):
 def readInputData(filepath):
     import csv
     array_of_dicts = []
-    outputPath = getOutputPath(inputPath)
+    outputPath = getOutputPath(filepath)
 
     with open(filepath, 'r') as file:
         reader = csv.DictReader(file)
