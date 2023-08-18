@@ -117,7 +117,6 @@ cdef (float) sequence_compare_cython(const vector[int] &seq1, const vector[int] 
 
 ##################################
 
-import pandas as pd
 from Bio.Align import substitution_matrices
 import numpy as np
 import itertools
@@ -132,10 +131,6 @@ def compare_sequences(outputPath, sequences_df):
             seq_conv[i] = blosum_alpha.index(seq[i])
         return seq_conv
 
-    results = []  # List to store results
-
-    #for i in range(len(sequences)):
-    #    for j in range(i + 1, len(sequences)):
     for (source_index, source_seq), (target_index, target_seq) in list(itertools.combinations(sequences_df, 2))[:10000]:
         seq1_conv = convert_sequence(source_seq.replace("-", ""))
         seq2_conv = convert_sequence(target_seq.replace("-", ""))
@@ -147,10 +142,3 @@ def compare_sequences(outputPath, sequences_df):
         if adjusted_score > 5:
             with open(outputPath, 'a') as f:
                 f.write(str(source_index)+","+str(target_index)+","+str(raw_score)+","+str(adjusted_score)+"\n")
-            # results.append((source_index, target_index, raw_score, adjusted_score))
-
-    # Convert list of results to a DataFrame
-    # NOTE: Weight column indicates adjusted score. It is named 'Weight' for the sake of easier processing by Gephi
-    # df = pd.DataFrame(results, columns=["Source", "Target", "Score", "Weight"])
-
-    return results
