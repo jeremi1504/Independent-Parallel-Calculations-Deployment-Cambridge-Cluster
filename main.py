@@ -64,7 +64,7 @@ data = comm.scatter(data, root=0)
 print(f"rank: {rank}, numprocess: {nprocs}")
 file_path = os.path.join(dir_name, f"input_{rank}.csv")
 with open(file_path, 'w') as f:
-    f.write('source_index,source,target_index,target\n')
+    f.write('Source,Target,Score,Weight\n')
 
 with open(file_path, 'a') as f:
     for (ix, x), (iy, y) in data:
