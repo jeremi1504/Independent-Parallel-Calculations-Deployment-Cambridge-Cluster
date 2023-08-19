@@ -146,7 +146,7 @@ def compare_sequences(outputPath, sequences_df):
                 f.write(str(source_index)+","+str(target_index)+","+str(raw_score)+","+str(adjusted_score)+"\n")
             
         
-def compare_sequence(config):
+def compare_sequence( source_seq, target_seq):
     blosum62 = np.asarray(substitution_matrices.load("BLOSUM62"))
     blosum_alpha = substitution_matrices.load("BLOSUM62").alphabet
 
@@ -155,8 +155,6 @@ def compare_sequence(config):
         for i in range(len(seq)):
             seq_conv[i] = blosum_alpha.index(seq[i])
         return seq_conv
-
-    source_index, source_seq, target_index, target_seq = config["source_index"], config["source"], config["target_index"], config["target"]
 
     seq1_conv = convert_sequence(source_seq.replace("-", ""))
     seq2_conv = convert_sequence(target_seq.replace("-", ""))
