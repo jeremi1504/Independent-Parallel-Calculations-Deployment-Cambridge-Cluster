@@ -34,7 +34,7 @@ def loadData():
         for row in spamreader:
             tmp = row[0].split(",")
             res.append(int(tmp[0]))
-    return res[:100]
+    return res
 
 
 with open('results.csv', 'w') as f:
