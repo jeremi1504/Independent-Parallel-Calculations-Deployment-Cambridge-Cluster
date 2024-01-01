@@ -2,9 +2,12 @@ from mpi4py import MPI
 import os
 from datetime import datetime
 from itertools import combinations, islice
-import PW_cython
+#import PW_cython
 import csv
 from typing import List, Dict
+import ZScoreHelper as zs
+import ZScorePW as zsp
+import numpy as np
 
 # Default variable initialization for MPI4PY
 # If you want to learn more, I recommend checking out:
@@ -82,7 +85,9 @@ def chunk_combinations(nprocs: int) -> List[islice]:
     """
     
     # Load the list of indexes (keys) that uniquely identify a record in the input data file.
-    indexes: List[int] = loadIndexes()
+    _, _, sequences = zs.loadDistances()
+    
+    indexes: List[int] = np.arange(len(sequences)) # loadIndexes()
     # Initialize the generator returning 2's combinations of all indexes.
     data_gen: combinations = combinations(indexes, 2)
     # Length of the list of indexes.
@@ -175,7 +180,7 @@ output_file_path = os.path.join(output_dir_name, f"output_{rank}.csv")
 # write headers to output csv file
 # you can freely modify it to your needs
 with open(output_file_path, "w") as f:
-    f.write("Source,Target,Score,Weight\n")
+    f.write("Source,Target,Weight\n")
 
 # load dictionary pointing from index to data record.
 # Using this map we pass data to our compute funciotn. In our case it's 
@@ -184,13 +189,28 @@ with open(output_file_path, "w") as f:
 # to boost performance. You can also try codon: 
 # https://github.com/exaloop/codon
 # to compile native python to optimised executable
-dataMap = loadIndexDataMap()
+#dataMap = loadIndexDataMap()
 
-# iterat over combinations of indexed from generator and compute. 
-# In our case we run pair-wise sequence alignment.
-# conditionally safe results to our output file.
+distances, ZNF_seq, sequences = zs.loadDistances()
+new_blosum62_tuple, (df_new_blosum62, new_blosum_alpha, new_blosum_array) = zs.getMatrixPipeline()
+
+
+# # iterat over combinations of indexed from generator and compute. 
+# # In our case we run pair-wise sequence alignment.
+# # conditionally safe results to our output file.
+# for ix, iy in data:
+#     raws, adjs = PW_cython.compare_sequence(dataMap[ix], dataMap[iy])
+#     if adjs > 5:
+#         with open(output_file_path, "a") as f:
+#             f.write(str(ix) + "," + str(iy) + "," + str(raws) + "," + str(adjs) + "\n")
+
 for ix, iy in data:
-    raws, adjs = PW_cython.compare_sequence(dataMap[ix], dataMap[iy])
-    if adjs > 5:
-        with open(output_file_path, "a") as f:
-            f.write(str(ix) + "," + str(iy) + "," + str(raws) + "," + str(adjs) + "\n")
+    seq1 = sequences[ix]
+    seq2 = sequences[iy]
+    dist1 = distances[ix]
+    dist2 = distances[iy]
+    seq1_conv = zs.convert_sequence(seq1.replace("-", ""), new_blosum_alpha)
+    seq2_conv = zs.convert_sequence(seq2.replace("-", ""), new_blosum_alpha)
+    score = zsp.testCompate(seq1_conv, seq2_conv, dist1, dist2, new_blosum_array)
+    with open(output_file_path, "a") as f:
+        f.write(str(ix) + "," + str(iy) + "," + str(score) + "\n")
