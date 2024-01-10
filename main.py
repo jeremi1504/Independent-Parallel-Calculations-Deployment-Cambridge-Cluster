@@ -24,6 +24,7 @@ nprocs = comm.Get_size()
 # ----------------------------------------------------------------------------
 
 
+
 def create_result_directory(name: str, includeTimeStamp: bool = True) -> str:
     """
     Create a directory to buffer multiple files storing the results of your
@@ -115,7 +116,7 @@ def chunk_combinations(nprocs: int) -> List[islice]:
 
     # finally we slice the generator according to starting index and size of elements. 
     # We achieve the list of generators that can be freely "send" scatered to multiple workers.
-    return [generatorSlice(data_gen, starts[p], counts[p]) for p in range(nprocs)]
+    return [generatorSlice(data_gen, starts[p], counts[p]) for p in range(nprocs)], indexes
 
 def loadIndexes(fileName: str = "inputData.csv") -> List[int]:
     """Load list of indexes (keys) that uniqualy point to records in input file.
@@ -164,7 +165,7 @@ def loadIndexDataMap(fileName: str = "inputData.csv") -> Dict[int, str]:
 
 output_dir_name = create_result_directory("results")
 
-data_slices = chunk_combinations(nprocs) if rank == 0 else None
+data_slices, indexes = chunk_combinations(nprocs) if rank == 0 else None
 
 # scatter generators accross workers
 data = comm.scatter(data_slices, root=0)
@@ -204,6 +205,33 @@ new_blosum62_tuple, (df_new_blosum62, new_blosum_alpha, new_blosum_array) = zs.g
 #         with open(output_file_path, "a") as f:
 #             f.write(str(ix) + "," + str(iy) + "," + str(raws) + "," + str(adjs) + "\n")
 
+class IncrementalMeanStdWelford:
+    def _init_(self):
+        self.n = 0
+        self.mean = 0
+        self.s = 0
+
+    def add_element(self, x):
+        self.n += 1
+        old_mean = self.mean
+        self.mean += (x - old_mean) / self.n
+        self.s += (x - self.mean) * (x - old_mean)
+
+    def get_current_mean(self):
+        return self.mean
+
+    def get_current_std(self):
+        if self.n > 1:
+            return (self.s / (self.n - 1)) ** 0.5
+        else:
+            return 0  # Standard deviation is not defined for a single element
+
+    def _str_(self):
+        return str(self.num_elements) + "," + "{:.2f}".format(self.get_current_mean()) + "," + "{:.2f}".format(self.get_current_std()) + "\n"
+    
+
+results = {i : IncrementalMeanStdWelford() for i in indexes}
+
 for ix, iy in data:
     seq1 = sequences[ix]
     seq2 = sequences[iy]
@@ -212,5 +240,11 @@ for ix, iy in data:
     seq1_conv = zs.convert_sequence(seq1.replace("-", ""), new_blosum_alpha)
     seq2_conv = zs.convert_sequence(seq2.replace("-", ""), new_blosum_alpha)
     score = zsp.testCompate(seq1_conv, seq2_conv, dist1, dist2, new_blosum_array)
-    with open(output_file_path, "a") as f:
-        f.write(str(ix) + "," + str(iy) + "," + str(score) + "\n")
+
+    results[ix].add_element(score)
+    results[iy].add_element(score)
+
+
+with open(output_file_path, "a") as f:
+    for index, values in results.items():
+        f.write(str(index) + "," + str(values))
