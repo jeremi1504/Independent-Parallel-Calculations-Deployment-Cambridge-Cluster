@@ -2,7 +2,7 @@ from mpi4py import MPI
 import os
 from datetime import datetime
 from itertools import combinations, islice
-import PW_cython
+import LCS_cython
 import csv
 from typing import List, Dict
 
@@ -151,6 +151,16 @@ def loadIndexDataMap(fileName: str = "inputData.csv") -> Dict[int, str]:
 
 
 # ----------------------------------------------------------------------------
+# Helper functions specific for the LCS calculations
+# ----------------------------------------------------------------------------
+
+def process_and_encode_string(input_string):
+    transformed = input_string.replace("(", "").replace(")", "") \
+                              .replace("-XXX-", "-").replace("XXX-", "") \
+                              .replace("-XXX", "").split("-")
+    return [s.encode('utf-8') for s in transformed]
+
+# ----------------------------------------------------------------------------
 # Computations start here!!!
 # Consider the code below as running on each worker in parallel.
 # Additionally, we can use rank and nprocs to distinguish between workers.
@@ -175,7 +185,7 @@ output_file_path = os.path.join(output_dir_name, f"output_{rank}.csv")
 # write headers to output csv file
 # you can freely modify it to your needs
 with open(output_file_path, "w") as f:
-    f.write("Source,Target,Score,Weight\n")
+    f.write("1,2,3,4,5,6,7,8\n")
 
 # load dictionary pointing from index to data record.
 # Using this map we pass data to our compute funciotn. In our case it's 
@@ -190,7 +200,10 @@ dataMap = loadIndexDataMap()
 # In our case we run pair-wise sequence alignment.
 # conditionally safe results to our output file.
 for ix, iy in data:
-    raws, adjs = PW_cython.compare_sequence(dataMap[ix], dataMap[iy])
-    if adjs > 5:
+    score = LCS_cython.cluster_ZNFs(process_and_encode_string(dataMap[ix]), process_and_encode_string(dataMap[iy]))
+    if score:
         with open(output_file_path, "a") as f:
-            f.write(str(ix) + "," + str(iy) + "," + str(raws) + "," + str(adjs) + "\n")
+            # Flatten the list, round the elements to two decimal places, and join without spaces
+            score_str = ','.join([f"{round(s, 2):.2f}" for s in score[0]])
+            f.write(f"{ix},{iy},{score_str}\n")
+
